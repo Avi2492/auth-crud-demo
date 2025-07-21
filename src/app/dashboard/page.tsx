@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+// import setUser from "@/store/slices/userSlice";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/store/slices/userSlice";
+// import { useDispatch } from "react-redux";
 
 export default function Dashboard() {
 	const { data: session } = useSession();
@@ -19,13 +20,13 @@ export default function Dashboard() {
 		phone: "",
 	});
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
-	useEffect(() => {
-		if (session?.user) {
-			dispatch(setUser(session.user));
-		}
-	}, [session, dispatch]);
+	// useEffect(() => {
+	// 	if (session?.user) {
+	// 		dispatch(setUser(session.user));
+	// 	}
+	// }, [session, dispatch]);
 
 	useEffect(() => {
 		const fetchUser = async () => {
