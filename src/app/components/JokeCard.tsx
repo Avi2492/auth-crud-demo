@@ -1,36 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 
-interface JokeProps {
-	title: string;
-	content: string;
-	user?: { name?: string; email?: string }; // make user optional
-}
-
-const JokeCard = ({ title, content, user }: JokeProps) => {
-	const [showFull, setShowFull] = useState(false);
-	const preview =
-		content.length > 100 ? content.slice(0, 100) + "..." : content;
-
-	return (
-		<div className="p-4 border rounded shadow-md bg-white space-y-2">
-			<h2 className="text-lg font-semibold">{title}</h2>
-			<p>
-				{showFull ? content : preview}
-				{content.length > 100 && (
-					<button
-						className="ml-2 text-blue-600 underline text-sm"
-						onClick={() => setShowFull(!showFull)}>
-						{showFull ? "Show Less" : "Read More"}
-					</button>
-				)}
-			</p>
-			<p className="text-sm text-gray-500">
-				Submitted by: {user?.name || user?.email || "Anonymous"}
-			</p>
-		</div>
-	);
+type Props = {
+	joke: any;
+	session: any;
+	onDelete?: () => void;
 };
 
-export default JokeCard;
+export default function JokeCard({ joke, session, onDelete }: Props) {
+	const handleDelete = async () => {
+		try {
+			const res = await fetch(`/api/jokes/${joke._id}`, {
+				method: "DELETE",
+			});
+			if (res.ok) {
+				alert("Joke deleted");
+				onDelete?.();
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	return (
+		<div className="p-4 shadow rounded-lg bg-white space-y-2">
+			<h2 className="font-bold text-lg">{joke.title}</h2>
+			<p>{joke.content}</p>
+			<p className="text-sm text-gray-500">By: {joke.creatorName}</p>
+
+			{session?.user?._id === joke.creatorId && (
+				<button
+					className="text-red-500 text-sm"
+					onClick={handleDelete}>
+					Delete
+				</button>
+			)}
+		</div>
+	);
+}

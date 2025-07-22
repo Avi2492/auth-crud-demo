@@ -1,26 +1,28 @@
-// app/jokes/page.tsx
+// app/(jokes)/joke-list/page.tsx
 
-import JokeCard from "@/app/components/JokeCard";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getAllJokes } from "@/lib/actions/jokes.action";
+import JokeCard from "@/app/components/JokeCard";
 
-export const revalidate = 30; // ISR - rebuilds every 30s
+export const revalidate = 30; // ✅ ISR - rebuild every 30s
 
 export default async function JokesPage() {
+	const session = await getServerSession(authOptions);
 	const jokes = await getAllJokes();
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-			{Array.isArray(jokes) && jokes.length > 0 ? (
-				jokes.map((joke) => (
+			{jokes.length > 0 ? (
+				jokes.map((joke: any) => (
 					<JokeCard
 						key={joke._id}
-						title={joke.title}
-						content={joke.content}
-						user={joke.user}
+						joke={joke}
+						session={session}
 					/>
 				))
 			) : (
-				<p className="text-gray-500 col-span-full">No jokes found.</p>
+				<p>No jokes found.</p>
 			)}
 		</div>
 	);

@@ -1,22 +1,27 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserState {
-	user: any;
-}
-
-const initialState: UserState = {
-	user: null,
+const initialState = {
+	user:
+		typeof window !== "undefined"
+			? JSON.parse(localStorage.getItem("user") || "null")
+			: null,
 };
 
 const userSlice = createSlice({
 	name: "user",
 	initialState,
 	reducers: {
-		setUser(state, action: PayloadAction<any>) {
+		setUser: (state, action: PayloadAction<any>) => {
 			state.user = action.payload;
+			if (typeof window !== "undefined") {
+				localStorage.setItem("user", JSON.stringify(action.payload));
+			}
 		},
-		clearUser(state) {
+		clearUser: (state) => {
 			state.user = null;
+			if (typeof window !== "undefined") {
+				localStorage.removeItem("user");
+			}
 		},
 	},
 });

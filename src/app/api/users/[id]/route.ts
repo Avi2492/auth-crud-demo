@@ -3,19 +3,13 @@ import { User } from "@/models/User";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
-export async function GET(
-	req: Request,
-	{ params }: { params: { id: string } },
-) {
+export async function GET(req: Request, { params }: { params: any }) {
 	await connectDB();
 	const user = await User.findById(params.id).select("-password");
 	return NextResponse.json(user);
 }
 
-export async function PATCH(
-	req: Request,
-	{ params }: { params: { id: string } },
-) {
+export async function PATCH(req: Request, { params }: { params: any }) {
 	await connectDB();
 	const body = await req.json();
 	const { name, email, password, jobRole, city, phone } = body;
@@ -29,10 +23,7 @@ export async function PATCH(
 	return NextResponse.json(updatedUser);
 }
 
-export async function DELETE(
-	req: Request,
-	{ params }: { params: { id: string } },
-) {
+export async function DELETE(req: Request, { params }: { params: any }) {
 	await connectDB();
 	await User.findByIdAndDelete(params.id);
 	return NextResponse.json({ message: "Account deleted" });
